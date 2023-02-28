@@ -1,5 +1,6 @@
 # Usar a imagem node:16.14-alpine como base
 
+FROM node:16.14-alpine
 # Mudar para o diretório de trabalho /app-backend
 
 # Copiar os package.json e package-lock.json para o container
