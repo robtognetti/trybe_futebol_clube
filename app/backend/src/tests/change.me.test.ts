@@ -4,65 +4,67 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import TeamModel from '../database/models/TeamModel';
-
+import Example from '../database/models/ExampleModel';
 import { Response } from 'superagent';
+import Team  from '../database/models/TeamModel';
+import TeamService from '../services/TeamService';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Testing endpoint', () => {
+describe('teste', () => {
+  describe('Tests Teams', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
 
-  let chaiHttpResponse: Response;
-  const everyTeam = [
+    it('Testing service - findAll', async () => {
 
-    {
-        id: 1,
-        teamName: 'Avaí/Kindermann'
-    },
+      const teams :Team[] = [ new Team({ id: 1, teamName: 'Teste' }) ];
+      sinon.stub(Team, 'findAll').resolves(teams);
+    const teamService = new TeamService();
 
-    {
-        id: 2,
-        teamName: 'Bahia'
-    },
+    const result = await teamService.findAll();
 
-    {
-        id: 3,
-        teamName: 'Botafogo'
-    }
-
-  ]
-
-  before(async () => {
-    sinon
-      .stub(TeamModel, "findAll")
-      .resolves([
-        {
-            id: 1,
-            teamName: 'Avaí/Kindermann',
-          },
-
-          {
-            id: 2,
-            teamName: 'Bahia',
-          },
-          
-          {
-            id: 3,
-            teamName: 'Botafogo',
-          },
-      ] as TeamModel[]);
+    expect(result).to.be.deep.equal(teams);
+    expect(result.length).to.be.equal(1);
+    expect(result).to.be.an('array');
   });
 
-  after(()=>{
-    (TeamModel.findAll as sinon.SinonStub).restore();
-  })
+  it('Testing service - getById', async () => {
+    const teams :Team = new Team({ id: 1, teamName: 'Teste' });
+    sinon.stub(Team, 'findByPk').resolves(teams);
+    const teamService = new TeamService();
 
-  it('Return all teams', async () => {
-    chaiHttpResponse = await chai.request(app).get('/teams');
-    expect(chaiHttpResponse.status).to.be.eq(200);
-    expect(chaiHttpResponse.body).to.be.an('array');
-    expect(chaiHttpResponse.body).to.deep.equal
+    const result = await teamService.getById(1);
+
+    expect(result).to.be.deep.equal(teams);
+    expect(result).to.be.an('object');
   });
+
+  it('Testing controler - getAll', async () => {
+    const teams :Team[] = [ new Team({ id: 1, teamName: 'Teste' }) ];
+    sinon.stub(Team, 'findAll').resolves(teams);
+    const teamService = new TeamService();
+
+    const result = await chai.request(app).get('/teams');
+
+    expect(result).to.be.an('object');
+    expect(result.body).to.be.an('array');
+    expect(result.body).to.be.deep.eq(teams.map((team) => team.dataValues));
+  });
+
+  it('Testing controler - getById', async () => {
+    const teams :Team = new Team({ id: 1, teamName: 'Teste' });
+    sinon.stub(Team, 'findByPk').resolves(teams);
+    const teamService = new TeamService();
+
+    const result = await chai.request(app).get('/teams/1');
+
+    expect(result).to.be.an('object');
+    expect(result.body).to.be.an('object');
+    expect(result.body).to.be.deep.equal(teams.dataValues);
+  });
+});
 });
