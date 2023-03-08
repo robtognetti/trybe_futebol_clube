@@ -7,6 +7,7 @@ import validateToken from '../middlewares/validateToken';
 const userRoutes = Router();
 
 const userService = new UserService();
+
 const userController = new UserController(userService);
 
 userRoutes.post(

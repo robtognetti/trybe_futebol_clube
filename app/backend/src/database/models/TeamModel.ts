@@ -1,7 +1,7 @@
-import { INTEGER, STRING, Model } from 'sequelize';
+import { Model, INTEGER, STRING } from 'sequelize';
 import db from '.';
 
-export default class Team extends Model {
+class Team extends Model {
   declare id: number;
   declare teamName: string;
 }
@@ -9,18 +9,20 @@ export default class Team extends Model {
 Team.init({
   id: {
     type: INTEGER,
+    allowNull: false,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false,
   },
   teamName: {
     type: STRING,
-    field: 'team_name',
+    allowNull: false,
   },
 }, {
   sequelize: db,
   underscored: true,
-  timestamps: false,
-  modelName: 'TeamModel',
   tableName: 'teams',
+  modelName: 'Team',
+  timestamps: false,
 });
+
+export default Team;

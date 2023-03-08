@@ -23,6 +23,19 @@ class MatchesService {
     return matches;
   }
 
+  async getAllActiveMatchesById(id:number): Promise<Matches[]> {
+    const allMatches = await this.model.findAll(
+      {
+        where: {
+          homeTeamId: id,
+          inProgress: false,
+        },
+      },
+    );
+    const filteredMatches = allMatches.filter((match) => match.inProgress === false);
+    return filteredMatches;
+  }
+
   public async finishedMatch(id: number): Promise<void> {
     await this.model.findByPk(id);
     await this.model.update({ inProgress: false }, { where: { id } });
@@ -40,7 +53,7 @@ class MatchesService {
     );
   }
 
-  public async newMatch(
+  public async createdMatch(
     homeTeamId: number,
     awayTeamId: number,
     homeTeamGoals: Date,

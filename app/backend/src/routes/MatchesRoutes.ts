@@ -18,15 +18,15 @@ matchesRouter.patch(
 matchesRouter.patch(
   '/:id',
   validateToken,
-  (req: Request, res: Response) =>
-    matchesController.updatedMatches(req, res),
+  (req: Request, res: Response, next: NextFunction) =>
+    matchesController.updatedMatches(req, res, next),
 );
 matchesRouter.post(
   '/',
   validateToken,
   validateMatch,
-  (req: Request, res: Response) =>
-    matchesController.newMatch(req, res),
+  (req: Request, res: Response, next: NextFunction) =>
+    matchesController.createdMatch(req, res, next),
 );
 
 export default matchesRouter;

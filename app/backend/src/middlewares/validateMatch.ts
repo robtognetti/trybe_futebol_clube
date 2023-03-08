@@ -1,11 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import TeamService from '../services/TeamService';
 
-export default async function validateMatches(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export default async function validateMatches(req: Request, res: Response, next: NextFunction) {
   const { homeTeamId, awayTeamId } = req.body;
   // problemas com too many lines do lint obrigou a fazer o req.body desta forma
 
@@ -25,5 +21,6 @@ export default async function validateMatches(
   if (!firstTeam || !secondTeam) {
     return res.status(404).send({ message: 'There is no team with such id!' });
   }
+
   next();
 }
